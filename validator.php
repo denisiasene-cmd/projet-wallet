@@ -96,3 +96,24 @@ function verifierFormatNom($nom) {
     }
     return true;
 }
+
+function verifierExistenceTelephone($telephone) {
+    global $wallets;
+    $telephone = trim($telephone);
+
+    foreach ($wallets as $wallet) {
+        if ($wallet['telephone'] === $telephone) {
+            return true;
+        }
+    }
+    return false; 
+}
+
+function verifierMontantStrictementPositif($montant) {
+    if (!verifierChampObligatoire($montant) || !verifierEstNumerique($montant)) {
+        return false;
+    }
+    return (float)$montant > 0;
+}
+
+
