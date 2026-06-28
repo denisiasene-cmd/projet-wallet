@@ -15,7 +15,6 @@ do {
     $choix = readline("Faites votre choix : ");
     $choix = trim($choix);
 
-  
     routerAction($choix);
 
 } while ($choix !== '0');

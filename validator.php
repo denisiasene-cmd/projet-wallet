@@ -11,7 +11,6 @@ function verifierChampObligatoire($valeur) {
     return $tailleUtile > 0;
 }
 
-
 function verifierEstNumerique($chaine) {
     $taille = 0;
     for ($i = 0; isset($chaine[$i]); $i++) {
@@ -23,7 +22,6 @@ function verifierEstNumerique($chaine) {
     return $taille > 0;
 }
 
-
 function verifierTailleExacte($chaine, $tailleAttendue) {
     $taille = 0;
     for ($i = 0; isset($chaine[$i]); $i++) {
@@ -31,7 +29,6 @@ function verifierTailleExacte($chaine, $tailleAttendue) {
     }
     return $taille === $tailleAttendue;
 }
-
 
 function verifierPrefixeSenegal($telephone) {
     $telephone = trim($telephone);
@@ -64,25 +61,28 @@ function verifierSoldeInitial($solde) {
     return $taille > 0;
 }
 
-
 function verifierUniciteTelephone($telephone) {
     global $wallets;
-    foreach ($wallets as $wallet) {
-        if ($wallet['telephone'] === $telephone) {
-            return false; 
-        }
+    $telephone = trim($telephone);
+
+    if (!isset($wallets) || !is_array($wallets) || count($wallets) === 0) {
+        return true;
     }
-    return true; 
+
+    $telephonesExistants = array_map(fn($wallet) => trim($wallet['telephone']), $wallets);
+    return !in_array($telephone, $telephonesExistants);
 }
 
 function verifierUniciteCode($code) {
     global $wallets;
-    foreach ($wallets as $wallet) {
-        if ($wallet['code'] === $code) {
-            return false; 
-        }
+    $code = trim($code);
+
+    if (!isset($wallets) || !is_array($wallets) || count($wallets) === 0) {
+        return true;
     }
-    return true; 
+
+    $codesExistants = array_map(fn($wallet) => trim($wallet['code']), $wallets);
+    return !in_array($code, $codesExistants);
 }
 
 function verifierFormatNom($nom) {
@@ -101,12 +101,12 @@ function verifierExistenceTelephone($telephone) {
     global $wallets;
     $telephone = trim($telephone);
 
-    foreach ($wallets as $wallet) {
-        if ($wallet['telephone'] === $telephone) {
-            return true;
-        }
+    if (!isset($wallets) || !is_array($wallets) || count($wallets) === 0) {
+        return false;
     }
-    return false; 
+
+    $comptesTrouves = array_filter($wallets, fn($wallet) => trim($wallet['telephone']) === $telephone);
+    return count($comptesTrouves) > 0;
 }
 
 function verifierMontantStrictementPositif($montant) {
@@ -120,14 +120,16 @@ function verifierSoldeDisponible($telephone, $montantTotalRequis) {
     global $wallets;
     $telephone = trim($telephone);
 
-    foreach ($wallets as $wallet) {
-        if ($wallet['telephone'] === $telephone) {
-            
-            return (float)$wallet['solde'] >= (float)$montantTotalRequis;
-        }
+    if (!isset($wallets) || !is_array($wallets) || count($wallets) === 0) {
+        return false;
+    }
+
+    $comptesTrouves = array_filter($wallets, fn($wallet) => trim($wallet['telephone']) === $telephone);
+
+    if (count($comptesTrouves) > 0) {
+        $reindexed = array_values($comptesTrouves);
+        $wallet = $reindexed[0];
+        return (float)$wallet['solde'] >= (float)$montantTotalRequis;
     }
     return false;
 }
-
-
-

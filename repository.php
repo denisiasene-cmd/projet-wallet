@@ -6,7 +6,6 @@ $transactions = [];
 function ajouterWallet($nouveauWallet) {
     global $wallets;
     
-  
     $prochainIndex = 0;
     foreach ($wallets as $w) {
         $prochainIndex = $prochainIndex + 1;
@@ -14,51 +13,54 @@ function ajouterWallet($nouveauWallet) {
     
     $wallets[$prochainIndex] = $nouveauWallet;
 }
-function calculerFraisRetrait($montant) {
-    $montant = (float)$montant;
-
-   
-    if ($montant >= 0 && $montant <= 10000) {
-        return 200.0;
-    }
-    
-  
-    if ($montant > 10000 && $montant <= 100000) {
-        return 500.0;
-    }
-    
-    
-    if ($montant > 100000) {
-        $frais = $montant * 0.01;
-        
-        
-        if ($frais > 5000) {
-            return 5000.0;
-        }
-        return $frais;
-    }
-
-    return 0.0;
-}
 
 function modifierSoldeDepot($telephone, $montant) {
     global $wallets;
     $telephone = trim($telephone);
     $montant = (float)$montant;
 
-    foreach ($wallets as &$wallet) {
-        if ($wallet['telephone'] === $telephone) {
-            $wallet['solde'] = $wallet['solde'] + $montant;
-            break;
+    $wallets = array_map(function($w) use ($telephone, $montant) {
+        if (trim($w['telephone']) === $telephone) {
+            $w['solde'] = $w['solde'] + $montant;
         }
-    }
+        return $w;
+    }, $wallets);
+    
+    enregistrerTransaction($telephone, 'depot', $montant, 0);
 }
+
+function modifierSoldeRetrait($telephone, $montantTotal) {
+    global $wallets;
+    $telephone = trim($telephone);
+    $montantTotal = (float)$montantTotal;
+
+    $wallets = array_map(function($w) use ($telephone, $montantTotal) {
+        if (trim($w['telephone']) === $telephone) {
+            $w['solde'] = $w['solde'] - $montantTotal;
+        }
+        return $w;
+    }, $wallets);
+}
+
+
+function enregistrerTransaction($telephone, $type, $montant, $frais) {
+    global $transactions;
+    
+    $index = 0;
+    foreach ($transactions as $t) {
+        $index++;
+    }
+
+    $transactions[$index] = [
+        'telephone' => trim($telephone),
+        'type' => $type,
+        'montant' => (float)$montant,
+        'frais' => (float)$frais
+    ];
+}
+
 
 function recupererTransactions() {
     global $transactions;
     return $transactions;
 }
-
-?>
-
-
