@@ -12,7 +12,7 @@ do {
     echo "0. Quitter l'application\n";
     echo "====================================\n";
     
-    $choix = readline("Faites votre choix : ");
+    $choix = readline("Donner votre choix : ");
     $choix = trim($choix);
 
   
