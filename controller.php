@@ -15,20 +15,21 @@ function routerAction($choix) {
             executerFaireDepot();
             break;
         case '3':
-           
             executerFaireRetrait();
             break;
         case '4':
-            echo "\n[Transactions] Module bientôt disponible.\n";
+            
+            executerListerTransactions();
             break;
         case '0':
-            echo "\nMerci d'avoir utilisé E-Wallet. Au revoir !\n";
+            echo "\n Quitter\n";
             break;
         default:
             echo "\nChoix invalide, veuillez réessayer.\n";
             break;
     }
 }
+
 
 function executerFaireDepot() {
     echo "\n--- FORMULAIRE DE DÉPÔT DE FONDS ---\n";
@@ -88,4 +89,12 @@ function executerFaireRetrait() {
     echo "\nSuccès: Retrait effectué ! Montant: " . $montant . " CFA | Frais: " . $frais . " CFA déduits avec succès.\n";
 }
 
+function executerListerTransactions() {
+    echo "\n=== TRANSACTIONS ===\n";
+    $liste = recupererTransactions();
+
+    foreach ($liste as $t) {
+        echo "Tél: " . $t['telephone'] . " | " . $t['type'] . " | " . $t['montant'] . " CFA | Frais: " . $t['frais'] . " CFA\n";
+    }
+}
 

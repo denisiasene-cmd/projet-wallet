@@ -54,6 +54,11 @@ function modifierSoldeDepot($telephone, $montant) {
     }
 }
 
+function recupererTransactions() {
+    global $transactions;
+    return $transactions;
+}
+
 ?>
 
 
