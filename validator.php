@@ -116,4 +116,18 @@ function verifierMontantStrictementPositif($montant) {
     return (float)$montant > 0;
 }
 
+function verifierSoldeDisponible($telephone, $montantTotalRequis) {
+    global $wallets;
+    $telephone = trim($telephone);
+
+    foreach ($wallets as $wallet) {
+        if ($wallet['telephone'] === $telephone) {
+            
+            return (float)$wallet['solde'] >= (float)$montantTotalRequis;
+        }
+    }
+    return false;
+}
+
+
 
